@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Wrong to Expert | Context Engineering for Salesforce Development</title>
+    <meta name="description" content="A case study showing how context engineering transforms AI from confidently wrong to genuinely expert — using Salesforce AgentScript as the test.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+        .stagger-5 { transition-delay: 0.5s; }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-wrong {
+            border-left: 4px solid #ef4444;
+        }
+        .card-right {
+            border-left: 4px solid #10b981;
+        }
+
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .layer-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        }
+
+        .hero-gradient {
+            background: radial-gradient(ellipse at 30% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                        linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-gray-100 font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 backdrop-blur-lg bg-slate-900/80 border-b border-slate-700/50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></div>
+                <span class="text-sm font-medium text-gray-400">Context Engineering Series</span>
+                <span class="text-slate-600 mx-1">/</span>
+                <span class="text-sm font-semibold text-gray-200">Part 2</span>
+            </div>
+            <a href="https://jtehrani84.github.io/claude-context-architecture/" target="_blank"
+               class="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                Part 1: Teaching Claude to Remember &rarr;
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient min-h-[85vh] flex items-center relative overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6 py-24 relative z-10">
+            <div class="max-w-3xl">
+                <p class="text-blue-400 font-mono text-sm tracking-wider mb-6 fade-up">CONTEXT ENGINEERING SERIES &mdash; PART 2</p>
+                <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8 fade-up stagger-1">
+                    From <span class="text-red-400">Wrong</span> to <span class="gradient-text">Expert</span><br>
+                    in Zero Shots
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 leading-relaxed mb-8 fade-up stagger-2">
+                    I asked two instances of the same AI model the same question about a Salesforce technology. One gave a confident, wrong answer. The other had a comprehensive development knowledge base.
+                </p>
+                <p class="text-lg text-gray-400 fade-up stagger-3">
+                    The only difference? <span class="text-gray-200 font-semibold">Context engineering.</span>
+                </p>
+            </div>
+
+            <!-- Floating question card -->
+            <div class="mt-16 fade-up stagger-4">
+                <div class="bg-slate-800/60 border border-slate-700/50 rounded-2xl p-8 max-w-2xl backdrop-blur-sm float-animation">
+                    <p class="text-sm text-gray-500 font-mono mb-3">THE QUESTION</p>
+                    <p class="text-2xl font-medium text-gray-200 leading-relaxed">
+                        "Does Claude fully know Salesforce AgentScript?"
+                    </p>
+                    <p class="text-sm text-gray-500 mt-4">Asked to Claude Opus 4.6 &mdash; April 2026</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Comparison - Main Event -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-up">Two Responses. Same Model. Same Day.</h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto fade-up stagger-1">Both running Claude Opus 4.6. Both asked the same question. The results tell the whole story.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+
+                <!-- Wrong Answer Card -->
+                <div class="fade-up stagger-1">
+                    <div class="bg-slate-800/50 rounded-2xl overflow-hidden border border-slate-700/50 h-full">
+                        <div class="bg-red-500/10 border-b border-red-500/20 px-6 py-4 flex items-center gap-3">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <span class="font-semibold text-red-400">Out of the Box</span>
+                            <span class="text-sm text-gray-500 ml-auto">claude.ai &mdash; no context</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="card-wrong bg-slate-800/80 rounded-lg p-4">
+                                <p class="text-gray-300 text-sm leading-relaxed">
+                                    "AgentScript is a <span class="text-red-400 font-semibold">guided scripting tool in Salesforce Service Cloud</span> that walks contact center agents through structured conversation flows."
+                                </p>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-red-400 mt-0.5 flex-shrink-0">&times;</span>
+                                    <p class="text-gray-400">"Basic setup and configuration in the Salesforce console"</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-red-400 mt-0.5 flex-shrink-0">&times;</span>
+                                    <p class="text-gray-400">"Scripts built with questions, branching logic, and responses"</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-red-400 mt-0.5 flex-shrink-0">&times;</span>
+                                    <p class="text-gray-400">"Integration with CTI, OmniChannel, Service Cloud Voice"</p>
+                                </div>
+                            </div>
+                            <div class="bg-red-500/5 border border-red-500/20 rounded-lg p-4 mt-6">
+                                <p class="text-sm font-semibold text-red-400 mb-1">Wrong Technology</p>
+                                <p class="text-xs text-gray-400 leading-relaxed">
+                                    This describes <em>Service Cloud Agent Scripts</em> &mdash; a legacy contact center scripting feature. Not Agent Script, the new programming language for Agentforce agents announced at TDX 2026. Completely different technology. The response was confident, well-structured, and fundamentally wrong.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Answer Card -->
+                <div class="fade-up stagger-2">
+                    <div class="bg-slate-800/50 rounded-2xl overflow-hidden border border-slate-700/50 h-full">
+                        <div class="bg-emerald-500/10 border-b border-emerald-500/20 px-6 py-4 flex items-center gap-3">
+                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                            <span class="font-semibold text-emerald-400">Context Engineered</span>
+                            <span class="text-sm text-gray-500 ml-auto">Claude Code &mdash; 3-layer knowledge base</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="card-right bg-slate-800/80 rounded-lg p-4">
+                                <p class="text-gray-300 text-sm leading-relaxed">
+                                    "Agent Script is a <span class="text-emerald-400 font-semibold">programming language purpose-built for AI agents</span>. <code class="font-mono text-xs bg-slate-700/50 px-1.5 py-0.5 rounded">.agent</code> files live in your repo &mdash; version, diff, review, and deploy like code."
+                                </p>
+                            </div>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-start gap-3">
+                                    <span class="text-emerald-400 mt-0.5 flex-shrink-0">&check;</span>
+                                    <p class="text-gray-400">Two instruction types: <code class="font-mono text-xs text-blue-400">-&gt;</code> deterministic + <code class="font-mono text-xs text-blue-400">|</code> AI reasoning</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-emerald-400 mt-0.5 flex-shrink-0">&check;</span>
+                                    <p class="text-gray-400">11 official patterns, 3 variable types, 4 action targets</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-emerald-400 mt-0.5 flex-shrink-0">&check;</span>
+                                    <p class="text-gray-400">Full CLI: generate &rarr; validate &rarr; preview &rarr; publish &rarr; activate</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-emerald-400 mt-0.5 flex-shrink-0">&check;</span>
+                                    <p class="text-gray-400">FSM architecture, instruction resolution, production gotchas</p>
+                                </div>
+                                <div class="flex items-start gap-3">
+                                    <span class="text-emerald-400 mt-0.5 flex-shrink-0">&check;</span>
+                                    <p class="text-gray-400">14-point activation checklist, 100-point scoring rubric</p>
+                                </div>
+                            </div>
+                            <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-4 mt-6">
+                                <p class="text-sm font-semibold text-emerald-400 mb-1">Correct Technology + Development-Ready</p>
+                                <p class="text-xs text-gray-400 leading-relaxed">
+                                    Correctly identifies Agent Script as the Agentforce DSL. Knows the syntax, patterns, CLI workflow, gotchas, and can author production <code class="font-mono">.agent</code> files. Not just aware &mdash; capable of building with it.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why It Failed -->
+    <section class="py-24 px-6 bg-slate-800/30">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center fade-up">Why the Same Model Got It Wrong</h2>
+
+            <div class="space-y-8">
+                <div class="fade-up stagger-1">
+                    <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-red-400 text-lg">1</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2">Training data has a cutoff</h3>
+                                <p class="text-gray-400 leading-relaxed">
+                                    Agent Script was announced at TDX in April 2026. Claude's training data predates this. When asked about "AgentScript," the model pattern-matched to the closest thing it knew &mdash; the legacy Service Cloud Agent Scripts feature. Different technology, similar name.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fade-up stagger-2">
+                    <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-amber-400 text-lg">2</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2">Confidence doesn't signal correctness</h3>
+                                <p class="text-gray-400 leading-relaxed">
+                                    The wrong answer was well-structured, detailed, and delivered with authority. It included specific integration points (CTI, OmniChannel), best practices, and practical advice. All of it for the wrong technology. This is the failure mode that matters most in enterprise settings &mdash; when AI sounds right but isn't.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fade-up stagger-3">
+                    <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-blue-400 text-lg">3</span>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2">RAG alone wouldn't fix this</h3>
+                                <p class="text-gray-400 leading-relaxed">
+                                    Even with retrieval-augmented generation, a vector database of Salesforce docs would need to contain the right docs, properly chunked, with enough context to distinguish between two similarly-named features. Context engineering goes deeper &mdash; it gives the model a structured knowledge base with syntax references, patterns, validation rules, and production gotchas. Not retrieval. Expertise.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Knowledge Architecture -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-up">What Context Engineering Actually Built</h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto fade-up stagger-1">Three layers of AgentScript knowledge, each serving a different purpose. The model doesn't just know what Agent Script is &mdash; it can build with it.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Layer 1 -->
+                <div class="fade-up stagger-1">
+                    <div class="layer-card rounded-2xl border border-slate-700/50 p-8 h-full hover:border-blue-500/30 transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6">
+                            <span class="text-blue-400 font-bold text-lg">L1</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-blue-400">Development Skill</h3>
+                        <p class="text-sm text-gray-500 mb-4 font-mono">sf-ai-agentscript v2.9.0</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            A complete development skill built from 96 workshop screenshots, official documentation, and community contributions. Covers syntax, architecture, validation, debugging, deployment, and testing.
+                        </p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between text-gray-500">
+                                <span>Reference docs</span>
+                                <span class="text-gray-300 font-mono">30+</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Pattern files</span>
+                                <span class="text-gray-300 font-mono">15+</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Agent examples</span>
+                                <span class="text-gray-300 font-mono">5</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Validator rules</span>
+                                <span class="text-gray-300 font-mono">14</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layer 2 -->
+                <div class="fade-up stagger-2">
+                    <div class="layer-card rounded-2xl border border-slate-700/50 p-8 h-full hover:border-emerald-500/30 transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6">
+                            <span class="text-emerald-400 font-bold text-lg">L2</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-emerald-400">Language Reference</h3>
+                        <p class="text-sm text-gray-500 mb-4 font-mono">wiki/concepts/agent-script-language.md</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            A 239-line language reference covering the full DSL: instruction types, variable system, action targets, control flow patterns, symbol reference, block structure, CLI commands, and official recipes.
+                        </p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between text-gray-500">
+                                <span>Official patterns</span>
+                                <span class="text-gray-300 font-mono">11</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Variable types</span>
+                                <span class="text-gray-300 font-mono">3</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Action targets</span>
+                                <span class="text-gray-300 font-mono">4</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>CLI commands</span>
+                                <span class="text-gray-300 font-mono">7</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layer 3 -->
+                <div class="fade-up stagger-3">
+                    <div class="layer-card rounded-2xl border border-slate-700/50 p-8 h-full hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-6">
+                            <span class="text-purple-400 font-bold text-lg">L3</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-purple-400">Strategic Memory</h3>
+                        <p class="text-sm text-gray-500 mb-4 font-mono">memory/ + wiki/concepts/</p>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Persistent memory connecting Agent Script to your actual Salesforce projects. Migration plans, architectural decisions, and strategic context that make the knowledge actionable &mdash; not just academic.
+                        </p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between text-gray-500">
+                                <span>Related wiki pages</span>
+                                <span class="text-gray-300 font-mono">8</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Memory files</span>
+                                <span class="text-gray-300 font-mono">3</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Cross-references</span>
+                                <span class="text-gray-300 font-mono">14</span>
+                            </div>
+                            <div class="flex justify-between text-gray-500">
+                                <span>Decision records</span>
+                                <span class="text-gray-300 font-mono">2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Sample -->
+    <section class="py-24 px-6 bg-slate-800/30">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center fade-up">What "Knowing" Actually Looks Like</h2>
+            <p class="text-gray-400 text-lg text-center mb-12 fade-up stagger-1">The context-engineered Claude doesn't just describe Agent Script. It writes it.</p>
+
+            <div class="fade-up stagger-2">
+                <div class="code-block rounded-2xl border border-slate-700/50 overflow-hidden">
+                    <div class="px-6 py-3 border-b border-slate-700/50 flex items-center gap-3">
+                        <div class="flex gap-1.5">
+                            <div class="w-3 h-3 rounded-full bg-red-500/60"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-500/60"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500/60"></div>
+                        </div>
+                        <span class="text-sm text-gray-500 font-mono">verification-gate.agent</span>
+                    </div>
+                    <pre class="p-6 text-sm font-mono leading-relaxed overflow-x-auto"><code><span class="text-purple-400">config:</span>
+  <span class="text-gray-400">developer_name:</span> <span class="text-emerald-400">Verification_Gate</span>
+  <span class="text-gray-400">agent_type:</span> <span class="text-emerald-400">AgentforceServiceAgent</span>
+
+<span class="text-purple-400">variables:</span>
+  <span class="text-gray-400">verified:</span> <span class="text-blue-400">mutable boolean</span> = <span class="text-amber-400">False</span>
+  <span class="text-gray-400">customer_email:</span> <span class="text-blue-400">mutable string</span> = <span class="text-amber-400">...</span>  <span class="text-gray-600"># slot-fill: LLM extracts from conversation</span>
+
+<span class="text-purple-400">start_agent:</span>
+  <span class="text-gray-400">instructions:</span> <span class="text-blue-400">-></span>                   <span class="text-gray-600"># deterministic: runs before LLM</span>
+    <span class="text-amber-400">if</span> @variables.verified == <span class="text-amber-400">False</span>:
+      <span class="text-blue-400">transition to</span> @subagent.Identity_Check
+    <span class="text-blue-400">|</span> Welcome back! How can I help today?  <span class="text-gray-600"># prompt: sent to LLM</span>
+
+<span class="text-purple-400">topic</span> <span class="text-emerald-400">Identity_Check</span>:
+  <span class="text-gray-400">instructions:</span> <span class="text-blue-400">-></span>
+    <span class="text-blue-400">run</span> @actions.verify_identity
+      <span class="text-gray-400">with</span> email=@variables.customer_email
+      <span class="text-gray-400">set</span> @variables.verified=@outputs.verified
+  <span class="text-gray-400">actions:</span>
+    <span class="text-gray-400">verify_identity:</span>
+      <span class="text-gray-400">target:</span> <span class="text-emerald-400">flow://Verify_Customer_Identity</span></code></pre>
+                </div>
+            </div>
+
+            <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 fade-up stagger-3">
+                <div class="bg-slate-800/60 rounded-lg p-4 text-center border border-slate-700/50">
+                    <p class="text-xs text-gray-500 mb-1 font-mono">-&gt;</p>
+                    <p class="text-sm text-gray-300">Deterministic</p>
+                    <p class="text-xs text-gray-500">runs before LLM</p>
+                </div>
+                <div class="bg-slate-800/60 rounded-lg p-4 text-center border border-slate-700/50">
+                    <p class="text-xs text-gray-500 mb-1 font-mono">|</p>
+                    <p class="text-sm text-gray-300">Prompt</p>
+                    <p class="text-xs text-gray-500">sent to LLM</p>
+                </div>
+                <div class="bg-slate-800/60 rounded-lg p-4 text-center border border-slate-700/50">
+                    <p class="text-xs text-gray-500 mb-1 font-mono">...</p>
+                    <p class="text-sm text-gray-300">Slot Fill</p>
+                    <p class="text-xs text-gray-500">LLM extracts value</p>
+                </div>
+                <div class="bg-slate-800/60 rounded-lg p-4 text-center border border-slate-700/50">
+                    <p class="text-xs text-gray-500 mb-1 font-mono">flow://</p>
+                    <p class="text-sm text-gray-300">Action Target</p>
+                    <p class="text-xs text-gray-500">runs Flow/Apex/API</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Numbers -->
+    <section class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center fade-up">The Knowledge Delta</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                <div class="text-center fade-up stagger-1">
+                    <p class="text-4xl md:text-5xl font-bold text-blue-400 counter" data-target="30">0</p>
+                    <p class="text-sm text-gray-400 mt-2">Reference Documents</p>
+                </div>
+                <div class="text-center fade-up stagger-2">
+                    <p class="text-4xl md:text-5xl font-bold text-emerald-400 counter" data-target="15">0</p>
+                    <p class="text-sm text-gray-400 mt-2">Working Pattern Files</p>
+                </div>
+                <div class="text-center fade-up stagger-3">
+                    <p class="text-4xl md:text-5xl font-bold text-purple-400 counter" data-target="96">0</p>
+                    <p class="text-sm text-gray-400 mt-2">Source Screenshots</p>
+                </div>
+                <div class="text-center fade-up stagger-4">
+                    <p class="text-4xl md:text-5xl font-bold text-amber-400 counter" data-target="100">0</p>
+                    <p class="text-sm text-gray-400 mt-2">Point Scoring Rubric</p>
+                </div>
+            </div>
+
+            <!-- Comparison table -->
+            <div class="mt-20 fade-up">
+                <div class="bg-slate-800/50 rounded-2xl border border-slate-700/50 overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-700/50">
+                                <th class="text-left px-6 py-4 text-gray-400 font-medium">Capability</th>
+                                <th class="text-center px-6 py-4 text-red-400 font-medium">Out of the Box</th>
+                                <th class="text-center px-6 py-4 text-emerald-400 font-medium">Context Engineered</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/30">
+                            <tr>
+                                <td class="px-6 py-3 text-gray-300">Identifies correct technology</td>
+                                <td class="px-6 py-3 text-center text-red-400">&times;</td>
+                                <td class="px-6 py-3 text-center text-emerald-400">&check;</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 text-gray-300">Knows <code class="font-mono text-xs bg-slate-700/50 px-1 py-0.5 rounded">-></code> vs <code class="font-mono text-xs bg-slate-700/50 px-1 py-0.5 rounded">|</code> syntax</td>
+                                <td class="px-6 py-3 text-center text-red-400">&times;</td>
+                                <td class="px-6 py-3 text-center text-emerald-400">&check;</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 text-gray-300">Can author <code class="font-mono text-xs bg-slate-700/50 px-1 py-0.5 rounded">.agent</code> files</td>
+                                <td class="px-6 py-3 text-center text-red-400">&times;</td>
+                                <td class="px-6 py-3 text-center text-emerald-400">&check;</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 text-gray-300">CLI workflow knowledge</td>
+                                <td class="px-6 py-3 text-center text-red-400">&times;</td>
+                                <td class="px-6 py-3 text-center text-emerald-400">&check;</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 text-gray-300">Production failure patterns</td>
+                                <td class="px-6 py-3 text-center text-red-400">&times;</td>
+                                <td class="px-6 py-3 text-center text-emerald-400">&check;</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 text-gray-300">Syntax validation</td>
+                                <td class="px-6 py-3 text-center text-red-400">&times;</td>
+                                <td class="px-6 py-3 text-center text-emerald-400">&check;</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-3 text-gray-300">Knows your project context</td>
+                                <td class="px-6 py-3 text-center text-red-400">&times;</td>
+                                <td class="px-6 py-3 text-center text-emerald-400">&check;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Bigger Point -->
+    <section class="py-24 px-6 bg-slate-800/30">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center fade-up">What This Means for SEs</h2>
+
+            <div class="space-y-6">
+                <div class="fade-up stagger-1">
+                    <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-200">Your AI doesn't know what it doesn't know</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            The vanilla response didn't say "I'm not sure" or "this might be outdated." It presented the wrong technology with the same confidence it would present the right one. For SEs preparing for customer conversations, this failure mode is worse than no answer at all &mdash; it sends you into a meeting with wrong information you believe is right.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="fade-up stagger-2">
+                    <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-200">Context engineering is a skill, not a feature</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            This isn't about buying the right tool or using the right model. The context-engineered Claude runs the same model (Opus 4.6) as the vanilla one. The difference is an architecture &mdash; wiki pages, memory files, skills, validation hooks &mdash; built over time by someone who uses AI for real work, not demos. Every correction compounds. Every session makes it smarter.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="fade-up stagger-3">
+                    <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
+                        <h3 class="text-xl font-semibold mb-3 text-gray-200">The investment is smaller than you think</h3>
+                        <p class="text-gray-400 leading-relaxed">
+                            The AgentScript knowledge base wasn't built in a day. It started with a wiki page. Then a skill was added. Then memory files captured corrections and decisions. The system grew organically alongside real work. You don't need to build the whole architecture before getting value &mdash; a single CLAUDE.md file with your org's patterns is already a meaningful improvement over the default.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Getting Started -->
+    <section class="py-24 px-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up">Start With One File</h2>
+            <p class="text-gray-400 text-lg mb-12 max-w-2xl mx-auto fade-up stagger-1">
+                You don't need a five-tier architecture on day one. Start with a CLAUDE.md that tells the model who you are, what you're working on, and which words to avoid. Build from there.
+            </p>
+
+            <div class="grid md:grid-cols-4 gap-6 fade-up stagger-2">
+                <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6">
+                    <div class="text-3xl font-bold text-blue-400 mb-3">1</div>
+                    <h4 class="font-semibold mb-2">CLAUDE.md</h4>
+                    <p class="text-sm text-gray-400">Your identity, role, projects, and routing table</p>
+                </div>
+                <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6">
+                    <div class="text-3xl font-bold text-emerald-400 mb-3">2</div>
+                    <h4 class="font-semibold mb-2">Wiki Pages</h4>
+                    <p class="text-sm text-gray-400">Deep reference for your domain, loaded on demand</p>
+                </div>
+                <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6">
+                    <div class="text-3xl font-bold text-purple-400 mb-3">3</div>
+                    <h4 class="font-semibold mb-2">Memory Files</h4>
+                    <p class="text-sm text-gray-400">Corrections and decisions that persist across sessions</p>
+                </div>
+                <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-6">
+                    <div class="text-3xl font-bold text-amber-400 mb-3">4</div>
+                    <h4 class="font-semibold mb-2">Skills</h4>
+                    <p class="text-sm text-gray-400">Specialized capabilities for specific technologies</p>
+                </div>
+            </div>
+
+            <div class="mt-16 fade-up stagger-3">
+                <a href="https://jtehrani84.github.io/claude-context-architecture/" target="_blank"
+                   class="inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-blue-500/20">
+                    Read Part 1: The Full Architecture Guide
+                    <span>&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-700/50 py-12 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <p class="text-gray-400 text-sm">Context Engineering Series &mdash; Part 2 of 5</p>
+                <p class="text-gray-500 text-xs mt-1">Built by John Tehrani &middot; Principal Solutions Engineer, Salesforce</p>
+            </div>
+            <div class="flex items-center gap-6 text-sm text-gray-500">
+                <a href="https://jtehrani84.github.io/claude-context-architecture/" class="hover:text-gray-300 transition-colors">Part 1: Foundation</a>
+                <span class="text-slate-700">&middot;</span>
+                <span class="text-gray-400">Part 2: Case Study</span>
+                <span class="text-slate-700">&middot;</span>
+                <span class="text-gray-600">Part 3: Coming Soon</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Scroll-triggered animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+
+                    // Trigger counter animation
+                    if (entry.target.querySelector('.counter')) {
+                        entry.target.querySelectorAll('.counter').forEach(counter => {
+                            animateCounter(counter);
+                        });
+                    }
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // Counter animation
+        function animateCounter(el) {
+            const target = parseInt(el.dataset.target);
+            const duration = 2000;
+            const startTime = performance.now();
+            const suffix = target === 100 ? '-pt' : '+';
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = Math.round(eased * target);
+                el.textContent = current + (progress >= 1 ? suffix : '');
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Initial check for elements already in view
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.fade-up').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    el.classList.add('visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
