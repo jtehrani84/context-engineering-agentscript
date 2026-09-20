@@ -111,10 +111,10 @@
                     in Zero Shots
                 </h1>
                 <p class="text-xl md:text-2xl text-gray-300 leading-relaxed mb-8 fade-up stagger-2">
-                    I asked two instances of the same AI model the same question about a Salesforce technology. One gave a confident, wrong answer. The other had a comprehensive development knowledge base.
+                    I asked two instances of the same AI model the same question about a Salesforce technology. One came back confident and completely wrong. The other had a full development knowledge base to draw on.
                 </p>
                 <p class="text-lg text-gray-400 fade-up stagger-3">
-                    The only difference? <span class="text-gray-200 font-semibold">Context engineering.</span>
+                    The only difference was <span class="text-gray-200 font-semibold">context engineering.</span>
                 </p>
             </div>
 
@@ -135,8 +135,8 @@
     <section class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-up">Two Responses. Same Model. Same Day.</h2>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto fade-up stagger-1">Both running Claude Opus 4.6. Both asked the same question. The results tell the whole story.</p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-up">Same Model, Same Day, Two Different Answers</h2>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto fade-up stagger-1">Both were running Claude Opus 4.6 and got the exact same question, and the two answers could not have landed further apart.</p>
             </div>
 
             <div class="grid md:grid-cols-2 gap-8">
@@ -172,7 +172,7 @@
                             <div class="bg-red-500/5 border border-red-500/20 rounded-lg p-4 mt-6">
                                 <p class="text-sm font-semibold text-red-400 mb-1">Wrong Technology</p>
                                 <p class="text-xs text-gray-400 leading-relaxed">
-                                    This describes <em>Service Cloud Agent Scripts</em> &mdash; a legacy contact center scripting feature. Not Agent Script, the new programming language for Agentforce agents announced at TDX 2026. Completely different technology. The response was confident, well-structured, and fundamentally wrong.
+                                    This is <em>Service Cloud Agent Scripts</em>, a legacy contact center scripting feature &mdash; completely different from Agent Script, the new programming language for Agentforce agents that Salesforce announced at TDX 2026. The two share a name and nothing else, and the answer was confident, well-structured, and fundamentally wrong.
                                 </p>
                             </div>
                         </div>
@@ -218,7 +218,7 @@
                             <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-4 mt-6">
                                 <p class="text-sm font-semibold text-emerald-400 mb-1">Correct Technology + Development-Ready</p>
                                 <p class="text-xs text-gray-400 leading-relaxed">
-                                    Correctly identifies Agent Script as the Agentforce DSL. Knows the syntax, patterns, CLI workflow, gotchas, and can author production <code class="font-mono">.agent</code> files. Not just aware &mdash; capable of building with it.
+                                    It correctly identifies Agent Script as the Agentforce DSL, and it knows the syntax, patterns, CLI workflow, and gotchas well enough to author production <code class="font-mono">.agent</code> files. That's the difference between being aware of a technology and being able to build with it.
                                 </p>
                             </div>
                         </div>
@@ -243,7 +243,7 @@
                             <div>
                                 <h3 class="text-xl font-semibold mb-2">Training data has a cutoff</h3>
                                 <p class="text-gray-400 leading-relaxed">
-                                    Agent Script was announced at TDX in April 2026. Claude's training data predates this. When asked about "AgentScript," the model pattern-matched to the closest thing it knew &mdash; the legacy Service Cloud Agent Scripts feature. Different technology, similar name.
+                                    Agent Script was announced at TDX in April 2026, which is after Claude's training data was frozen. So when someone asks about "AgentScript," the model reaches for the closest thing it already knows &mdash; the legacy Service Cloud Agent Scripts feature, a different technology that happens to wear a similar name.
                                 </p>
                             </div>
                         </div>
@@ -259,7 +259,7 @@
                             <div>
                                 <h3 class="text-xl font-semibold mb-2">Confidence doesn't signal correctness</h3>
                                 <p class="text-gray-400 leading-relaxed">
-                                    The wrong answer was well-structured, detailed, and delivered with authority. It included specific integration points (CTI, OmniChannel), best practices, and practical advice. All of it for the wrong technology. This is the failure mode that matters most in enterprise settings &mdash; when AI sounds right but isn't.
+                                    The wrong answer was well-structured and detailed, delivered with real authority. It cited specific integration points like CTI and OmniChannel, along with best practices and practical advice &mdash; all of it for the wrong technology. That's the failure mode that matters most in an enterprise setting, where AI sounds right without being right.
                                 </p>
                             </div>
                         </div>
@@ -275,7 +275,7 @@
                             <div>
                                 <h3 class="text-xl font-semibold mb-2">RAG alone wouldn't fix this</h3>
                                 <p class="text-gray-400 leading-relaxed">
-                                    Even with retrieval-augmented generation, a vector database of Salesforce docs would need to contain the right docs, properly chunked, with enough context to distinguish between two similarly-named features. Context engineering goes deeper &mdash; it gives the model a structured knowledge base with syntax references, patterns, validation rules, and production gotchas. Not retrieval. Expertise.
+                                    Even with retrieval-augmented generation, a vector database of Salesforce docs would still need the right docs in it, chunked properly, with enough surrounding context to tell two similarly-named features apart. Context engineering goes further than that. It hands the model a structured knowledge base with syntax references, patterns, validation rules, and production gotchas, so what comes back reads less like retrieval and more like someone who has actually shipped with the language.
                                 </p>
                             </div>
                         </div>
@@ -290,7 +290,7 @@
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4 fade-up">What Context Engineering Actually Built</h2>
-                <p class="text-gray-400 text-lg max-w-2xl mx-auto fade-up stagger-1">Three layers of AgentScript knowledge, each serving a different purpose. The model doesn't just know what Agent Script is &mdash; it can build with it.</p>
+                <p class="text-gray-400 text-lg max-w-2xl mx-auto fade-up stagger-1">Three layers of AgentScript knowledge, each doing a different job. Together they take the model past recognizing what Agent Script is and into building with it.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
@@ -303,7 +303,7 @@
                         <h3 class="text-xl font-semibold mb-2 text-blue-400">Development Skill</h3>
                         <p class="text-sm text-gray-500 mb-4 font-mono">sf-ai-agentscript v2.9.0</p>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                            A complete development skill built from 96 workshop screenshots, official documentation, and community contributions. Covers syntax, architecture, validation, debugging, deployment, and testing.
+                            A complete development skill built from 96 workshop screenshots, the official documentation, and community contributions, covering syntax, architecture, validation, debugging, deployment, and testing.
                         </p>
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between text-gray-500">
@@ -335,7 +335,7 @@
                         <h3 class="text-xl font-semibold mb-2 text-emerald-400">Language Reference</h3>
                         <p class="text-sm text-gray-500 mb-4 font-mono">wiki/concepts/agent-script-language.md</p>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                            A 239-line language reference covering the full DSL: instruction types, variable system, action targets, control flow patterns, symbol reference, block structure, CLI commands, and official recipes.
+                            A 239-line language reference that covers the full DSL, from instruction types and the variable system through action targets, control flow patterns, the symbol reference, block structure, CLI commands, and the official recipes.
                         </p>
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between text-gray-500">
@@ -367,7 +367,7 @@
                         <h3 class="text-xl font-semibold mb-2 text-purple-400">Strategic Memory</h3>
                         <p class="text-sm text-gray-500 mb-4 font-mono">memory/ + wiki/concepts/</p>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                            Persistent memory connecting Agent Script to your actual Salesforce projects. Migration plans, architectural decisions, and strategic context that make the knowledge actionable &mdash; not just academic.
+                            Persistent memory that ties Agent Script to your actual Salesforce projects &mdash; the migration plans, architectural decisions, and strategic context that turn reference knowledge into something you can act on instead of just read.
                         </p>
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between text-gray-500">
@@ -397,7 +397,7 @@
     <section class="py-24 px-6 bg-slate-800/30">
         <div class="max-w-4xl mx-auto">
             <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center fade-up">What "Knowing" Actually Looks Like</h2>
-            <p class="text-gray-400 text-lg text-center mb-12 fade-up stagger-1">The context-engineered Claude doesn't just describe Agent Script. It writes it.</p>
+            <p class="text-gray-400 text-lg text-center mb-12 fade-up stagger-1">The context-engineered Claude does more than describe Agent Script &mdash; it writes it.</p>
 
             <div class="fade-up stagger-2">
                 <div class="code-block rounded-2xl border border-slate-700/50 overflow-hidden">
@@ -555,7 +555,7 @@
                     <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
                         <h3 class="text-xl font-semibold mb-3 text-gray-200">Context engineering is a skill, not a feature</h3>
                         <p class="text-gray-400 leading-relaxed">
-                            This isn't about buying the right tool or using the right model. The context-engineered Claude runs the same model (Opus 4.6) as the vanilla one. The difference is an architecture &mdash; wiki pages, memory files, skills, validation hooks &mdash; built over time by someone who uses AI for real work, not demos. Every correction compounds. Every session makes it smarter.
+                            This isn't about buying the right tool or picking the right model. The context-engineered Claude runs the very same model, Opus 4.6, as the vanilla one. What separates them is architecture. It's a growing set of wiki pages, memory files, skills, and validation hooks, built up over time by someone who uses AI for real work rather than demos, and it keeps getting sharper because every correction it absorbs carries into the next session.
                         </p>
                     </div>
                 </div>
@@ -564,7 +564,7 @@
                     <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
                         <h3 class="text-xl font-semibold mb-3 text-gray-200">The investment is smaller than you think</h3>
                         <p class="text-gray-400 leading-relaxed">
-                            The AgentScript knowledge base wasn't built in a day. It started with a wiki page. Then a skill was added. Then memory files captured corrections and decisions. The system grew organically alongside real work. You don't need to build the whole architecture before getting value &mdash; a single CLAUDE.md file with your org's patterns is already a meaningful improvement over the default.
+                            The AgentScript knowledge base wasn't built in a day. It started as a single wiki page, then a skill got added, then memory files that captured corrections and decisions, and the whole thing grew alongside real work. You don't have to build the entire architecture before it pays off &mdash; a single CLAUDE.md file carrying your org's patterns already beats the default by a wide margin.
                         </p>
                     </div>
                 </div>
@@ -577,7 +577,7 @@
         <div class="max-w-4xl mx-auto text-center">
             <h2 class="text-3xl md:text-4xl font-bold mb-6 fade-up">Start With One File</h2>
             <p class="text-gray-400 text-lg mb-12 max-w-2xl mx-auto fade-up stagger-1">
-                You don't need a five-tier architecture on day one. Start with a CLAUDE.md that tells the model who you are, what you're working on, and which words to avoid. Build from there.
+                You don't need a five-tier architecture on day one. Start with a CLAUDE.md that tells the model who you are, what you're working on, and which words to avoid, then build out from there as the work demands it.
             </p>
 
             <div class="grid md:grid-cols-4 gap-6 fade-up stagger-2">
