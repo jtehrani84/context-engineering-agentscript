@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>From Wrong to Expert | Context Engineering for Salesforce Development</title>
+    <title>From Wrong to Expert — Context Engineering, Part 2</title>
     <meta name="description" content="A case study showing how context engineering transforms AI from confidently wrong to genuinely expert — using Salesforce AgentScript as the test.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -88,16 +88,19 @@
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 backdrop-blur-lg bg-slate-900/80 border-b border-slate-700/50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-2 h-2 rounded-full bg-emerald-400 pulse-dot"></div>
-                <span class="text-sm font-medium text-gray-400">Context Engineering Series</span>
-                <span class="text-slate-600 mx-1">/</span>
-                <span class="text-sm font-semibold text-gray-200">Part 2</span>
+            <span class="text-sm font-mono text-gray-500">context-engineering <span class="text-blue-400">//</span> part-2</span>
+            <div class="flex items-center gap-3 sm:gap-4 text-xs font-mono text-gray-500">
+                <a href="https://jtehrani84.github.io/claude-context-architecture/" class="hover:text-gray-300 transition">1</a>
+                <span class="text-blue-400 font-semibold">2</span>
+                <a href="https://jtehrani84.github.io/context-engineering-mcp/" class="hover:text-gray-300 transition">3</a>
+                <a href="https://jtehrani84.github.io/context-engineering-knowledge-graph/" class="hover:text-gray-300 transition hidden sm:inline">4</a>
+                <a href="https://jtehrani84.github.io/context-engineering-skills/" class="hover:text-gray-300 transition hidden sm:inline">5</a>
+                <a href="https://jtehrani84.github.io/claude-context-architecture/from-memory-to-operating-system.html" class="hover:text-gray-300 transition hidden sm:inline">6</a>
+                <a href="https://jtehrani84.github.io/context-engineering-part-7/" class="hover:text-gray-300 transition hidden sm:inline">7</a>
+                <a href="https://jtehrani84.github.io/context-engineering-part-8/" class="hover:text-gray-300 transition hidden sm:inline">8</a>
+                <a href="https://jtehrani84.github.io/context-engineering-part-9/" class="hover:text-gray-300 transition hidden sm:inline">9</a>
+                <a href="https://jtehrani84.github.io/context-engineering-part-10/" class="hover:text-gray-300 transition hidden sm:inline">10</a>
             </div>
-            <a href="https://jtehrani84.github.io/claude-context-architecture/" target="_blank"
-               class="text-sm text-blue-400 hover:text-blue-300 transition-colors">
-                Part 1: Teaching Claude to Remember &rarr;
-            </a>
         </div>
     </nav>
 
@@ -105,7 +108,7 @@
     <section class="hero-gradient min-h-[85vh] flex items-center relative overflow-hidden">
         <div class="max-w-6xl mx-auto px-6 py-24 relative z-10">
             <div class="max-w-3xl">
-                <p class="text-blue-400 font-mono text-sm tracking-wider mb-6 fade-up">CONTEXT ENGINEERING SERIES &mdash; PART 2</p>
+                <p class="text-blue-400 font-mono text-sm tracking-wider uppercase mb-6 fade-up">Context Engineering Series &middot; Part 2</p>
                 <h1 class="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-8 fade-up stagger-1">
                     From <span class="text-red-400">Wrong</span> to <span class="gradient-text">Expert</span><br>
                     in Zero Shots
@@ -172,7 +175,7 @@
                             <div class="bg-red-500/5 border border-red-500/20 rounded-lg p-4 mt-6">
                                 <p class="text-sm font-semibold text-red-400 mb-1">Wrong Technology</p>
                                 <p class="text-xs text-gray-400 leading-relaxed">
-                                    This is <em>Service Cloud Agent Scripts</em>, a legacy contact center scripting feature &mdash; completely different from Agent Script, the new programming language for Agentforce agents that Salesforce announced at TDX 2026. The two share a name and nothing else, and the answer was confident, well-structured, and fundamentally wrong.
+                                    This is <em>Service Cloud Agent Scripts</em>, a legacy contact center scripting feature, and it's a completely different thing from Agent Script, the new programming language for Agentforce agents that Salesforce announced at TDX 2026. The two share a name and nothing else, so the answer came back confident, well-structured, and fundamentally wrong.
                                 </p>
                             </div>
                         </div>
@@ -190,7 +193,7 @@
                         <div class="p-6 space-y-4">
                             <div class="card-right bg-slate-800/80 rounded-lg p-4">
                                 <p class="text-gray-300 text-sm leading-relaxed">
-                                    "Agent Script is a <span class="text-emerald-400 font-semibold">programming language purpose-built for AI agents</span>. <code class="font-mono text-xs bg-slate-700/50 px-1.5 py-0.5 rounded">.agent</code> files live in your repo &mdash; version, diff, review, and deploy like code."
+                                    "Agent Script is a <span class="text-emerald-400 font-semibold">programming language purpose-built for AI agents</span>. <code class="font-mono text-xs bg-slate-700/50 px-1.5 py-0.5 rounded">.agent</code> files live in your repo... you version, diff, review, and deploy them like code."
                                 </p>
                             </div>
                             <div class="space-y-3 text-sm">
@@ -218,7 +221,7 @@
                             <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-lg p-4 mt-6">
                                 <p class="text-sm font-semibold text-emerald-400 mb-1">Correct Technology + Development-Ready</p>
                                 <p class="text-xs text-gray-400 leading-relaxed">
-                                    It correctly identifies Agent Script as the Agentforce DSL, and it knows the syntax, patterns, CLI workflow, and gotchas well enough to author production <code class="font-mono">.agent</code> files. That's the difference between being aware of a technology and being able to build with it.
+                                    It correctly identifies Agent Script as the Agentforce DSL, and it knows the syntax, patterns, CLI workflow, and gotchas well enough to author production <code class="font-mono">.agent</code> files. There's a real gap between being aware that a technology exists and being able to actually build with it, and that gap is the whole story here.
                                 </p>
                             </div>
                         </div>
@@ -243,7 +246,7 @@
                             <div>
                                 <h3 class="text-xl font-semibold mb-2">Training data has a cutoff</h3>
                                 <p class="text-gray-400 leading-relaxed">
-                                    Agent Script was announced at TDX in April 2026, which is after Claude's training data was frozen. So when someone asks about "AgentScript," the model reaches for the closest thing it already knows &mdash; the legacy Service Cloud Agent Scripts feature, a different technology that happens to wear a similar name.
+                                    Agent Script was announced at TDX in April 2026, which is after Claude's training data was frozen. So when someone asks about "AgentScript," the model reaches for the closest thing it already knows, the legacy Service Cloud Agent Scripts feature, a different technology that happens to wear a similar name.
                                 </p>
                             </div>
                         </div>
@@ -259,7 +262,7 @@
                             <div>
                                 <h3 class="text-xl font-semibold mb-2">Confidence doesn't signal correctness</h3>
                                 <p class="text-gray-400 leading-relaxed">
-                                    The wrong answer was well-structured and detailed, delivered with real authority. It cited specific integration points like CTI and OmniChannel, along with best practices and practical advice &mdash; all of it for the wrong technology. That's the failure mode that matters most in an enterprise setting, where AI sounds right without being right.
+                                    The wrong answer was well-structured and detailed, delivered with real authority. It cited specific integration points like CTI and OmniChannel, along with setup steps and practical advice, all of it for the wrong technology. That's the failure mode that scares me most in an enterprise setting, where the AI sounds right without being right and nothing in the tone tips you off.
                                 </p>
                             </div>
                         </div>
@@ -367,7 +370,7 @@
                         <h3 class="text-xl font-semibold mb-2 text-purple-400">Strategic Memory</h3>
                         <p class="text-sm text-gray-500 mb-4 font-mono">memory/ + wiki/concepts/</p>
                         <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                            Persistent memory that ties Agent Script to your actual Salesforce projects &mdash; the migration plans, architectural decisions, and strategic context that turn reference knowledge into something you can act on instead of just read.
+                            Persistent memory that ties Agent Script to your actual Salesforce projects... the migration plans, architectural decisions, and strategic context that turn reference knowledge into something you can act on instead of just read.
                         </p>
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between text-gray-500">
@@ -397,7 +400,7 @@
     <section class="py-24 px-6 bg-slate-800/30">
         <div class="max-w-4xl mx-auto">
             <h2 class="text-3xl md:text-4xl font-bold mb-4 text-center fade-up">What "Knowing" Actually Looks Like</h2>
-            <p class="text-gray-400 text-lg text-center mb-12 fade-up stagger-1">The context-engineered Claude does more than describe Agent Script &mdash; it writes it.</p>
+            <p class="text-gray-400 text-lg text-center mb-12 fade-up stagger-1">The context-engineered Claude does more than describe Agent Script, it writes it.</p>
 
             <div class="fade-up stagger-2">
                 <div class="code-block rounded-2xl border border-slate-700/50 overflow-hidden">
@@ -546,7 +549,7 @@
                     <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
                         <h3 class="text-xl font-semibold mb-3 text-gray-200">Your AI doesn't know what it doesn't know</h3>
                         <p class="text-gray-400 leading-relaxed">
-                            The vanilla response didn't say "I'm not sure" or "this might be outdated." It presented the wrong technology with the same confidence it would present the right one. For SEs preparing for customer conversations, this failure mode is worse than no answer at all &mdash; it sends you into a meeting with wrong information you believe is right.
+                            The vanilla response didn't say "I'm not sure" or "this might be outdated." It presented the wrong technology with the same confidence it would present the right one. For an SE prepping for a customer conversation, this failure mode is worse than no answer at all, because it sends you into a meeting armed with wrong information you fully believe is right.
                         </p>
                     </div>
                 </div>
@@ -564,7 +567,7 @@
                     <div class="bg-slate-800/60 rounded-xl border border-slate-700/50 p-8">
                         <h3 class="text-xl font-semibold mb-3 text-gray-200">The investment is smaller than you think</h3>
                         <p class="text-gray-400 leading-relaxed">
-                            The AgentScript knowledge base wasn't built in a day. It started as a single wiki page, then a skill got added, then memory files that captured corrections and decisions, and the whole thing grew alongside real work. You don't have to build the entire architecture before it pays off &mdash; a single CLAUDE.md file carrying your org's patterns already beats the default by a wide margin.
+                            The AgentScript knowledge base wasn't built in a day. It started as a single wiki page, then a skill got added, then memory files that captured corrections and decisions, and the whole thing grew alongside real work. You really don't have to build the entire architecture before it starts paying off... a single CLAUDE.md file carrying your org's patterns already beats the default by a wide margin.
                         </p>
                     </div>
                 </div>
@@ -615,18 +618,9 @@
 
     <!-- Footer -->
     <footer class="border-t border-slate-700/50 py-12 px-6">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-                <p class="text-gray-400 text-sm">Context Engineering Series &mdash; Part 2 of 5</p>
-                <p class="text-gray-500 text-xs mt-1">Built by John Tehrani &middot; Principal Solutions Engineer, Salesforce</p>
-            </div>
-            <div class="flex items-center gap-6 text-sm text-gray-500">
-                <a href="https://jtehrani84.github.io/claude-context-architecture/" class="hover:text-gray-300 transition-colors">Part 1: Foundation</a>
-                <span class="text-slate-700">&middot;</span>
-                <span class="text-gray-400">Part 2: Case Study</span>
-                <span class="text-slate-700">&middot;</span>
-                <span class="text-gray-600">Part 3: Coming Soon</span>
-            </div>
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-mono text-gray-500">
+            <span>Context Engineering Series &middot; Part 2 &middot; John Tehrani</span>
+            <span>The only difference was context.</span>
         </div>
     </footer>
 
